@@ -33,22 +33,22 @@ while(inp != ""):
         IWord = "0000000_" + DtB(int(instrFields[3][1:]),5) + "_"+ DtB(int(instrFields[2][1:]),5) + "_111_" + DtB(int(instrFields[1][1:]),5) + "_0110011"
     elif(instrName == "beq"):
         branch = DtB(int(instrFields[3]), 12)
-        IWord = branch[0:7] + "_" + DtB(int(instrFields[2][1:]),5) + "_" + DtB(int(instrFields[1][1:]),5) + "_000_" + branch[8:] + "_" + "1100011"
+        IWord = branch[0:7] + "_" + DtB(int(instrFields[2][1:]),5) + "_" + DtB(int(instrFields[1][1:]),5) + "_000_" + branch[7:] + "_" + "1100011"
     elif(instrName == "bne"):
         branch = DtB(int(instrFields[3]), 12)
-        IWord = branch[0:7] + "_" + DtB(int(instrFields[2][1:]),5) + "_" + DtB(int(instrFields[1][1:]),5) + "_001_" + branch[8:] + "_" + "1100011"
+        IWord = branch[0:7] + "_" + DtB(int(instrFields[2][1:]),5) + "_" + DtB(int(instrFields[1][1:]),5) + "_001_" + branch[7:] + "_" + "1100011"
     elif(instrName == "blt"):
         branch = DtB(int(instrFields[3]), 12)
-        IWord = branch[0:7] + "_" + DtB(int(instrFields[2][1:]),5) + "_" + DtB(int(instrFields[1][1:]),5) + "_100_" + branch[8:] + "_" + "1100011"
+        IWord = branch[0:7] + "_" + DtB(int(instrFields[2][1:]),5) + "_" + DtB(int(instrFields[1][1:]),5) + "_100_" + branch[7:] + "_" + "1100011"
     elif(instrName == "bge"):
         branch = DtB(int(instrFields[3]), 12)
-        IWord = branch[0:7] + "_" + DtB(int(instrFields[2][1:]),5) + "_" + DtB(int(instrFields[1][1:]),5) + "_101_" + branch[8:] + "_" + "1100011"
+        IWord = branch[0:7] + "_" + DtB(int(instrFields[2][1:]),5) + "_" + DtB(int(instrFields[1][1:]),5) + "_101_" + branch[7:] + "_" + "1100011"
     elif(instrName == "bltu"):
         branch = DtB(int(instrFields[3]), 12)
-        IWord = branch[0:7] + "_" + DtB(int(instrFields[2][1:]),5) + "_" + DtB(int(instrFields[1][1:]),5) + "_110_" + branch[8:] + "_" + "1100011"
+        IWord = branch[0:7] + "_" + DtB(int(instrFields[2][1:]),5) + "_" + DtB(int(instrFields[1][1:]),5) + "_110_" + branch[7:] + "_" + "1100011"
     elif(instrName == "bgeu"):
         branch = DtB(int(instrFields[3]), 12)
-        IWord = branch[0:7] + "_" + DtB(int(instrFields[2][1:]),5) + "_" + DtB(int(instrFields[1][1:]),5) + "_111_" + branch[8:] + "_" + "1100011"
+        IWord = branch[0:7] + "_" + DtB(int(instrFields[2][1:]),5) + "_" + DtB(int(instrFields[1][1:]),5) + "_111_" + branch[7:] + "_" + "1100011"
     elif(instrName == "lb"):
         IWord = DtB(int(instrFields[3]), 12) + "_" + DtB(int(instrFields[2][1:]), 5) + "_000_" + DtB(int(instrFields[1][1:]), 5) + "_0000011"
     elif(instrName == "lh"):
