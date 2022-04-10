@@ -77,5 +77,5 @@ while(inp != ""):
         IWord = DtB(int(instrFields[3]), 12) + "_" + DtB(int(instrFields[2][1:]), 5) + "_110_" + DtB(int(instrFields[1][1:]), 5) + "_0010011"
     elif(instrName == "andi"):
         IWord = DtB(int(instrFields[3]), 12) + "_" + DtB(int(instrFields[2][1:]), 5) + "_111_" + DtB(int(instrFields[1][1:]), 5) + "_0010011"
-    print(IWord + "; //" + inp)
+    print("32'b" + IWord + "; //" + inp)
     inp = str(input("Enter an instruction: "))
