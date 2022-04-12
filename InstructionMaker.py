@@ -1,4 +1,4 @@
-
+import clipboard
 print("Instructions should be entered in a human readable format\nRegister addresses should be prefaced with an \"x\"")
 
 inp = str(input("Enter an instruction: "))
@@ -6,81 +6,84 @@ while(inp != ""):
     instrFields = inp.split()
     issue = False
     DtB = lambda x,y : ''.join(reversed( [str((x >> i) & 1) for i in range(y)]))
+    rtype = lambda funct7, funct3 : funct7 + "_" + DtB(int(instrFields[3][1:]),5) + "_" + DtB(int(instrFields[2][1:]),5)+ "_" + funct3 + "_" + DtB(int(instrFields[1][1:]),5) + "_0110011"
+    itype = lambda funct3 : DtB(int(instrFields[3]), 12) + "_" + DtB(int(instrFields[2][1:]), 5) + "_" + funct3 + "_" + DtB(int(instrFields[1][1:]), 5) + "_0010011"
+    loadInstr = lambda funct3 : DtB(int(instrFields[3]), 12) + "_" + DtB(int(instrFields[2][1:]), 5) + "_" + funct3 + "_" + DtB(int(instrFields[1][1:]), 5) + "_0000011"
+    def btype(funct3):
+        imm = DtB(int(instrFields[3]), 12)
+        return imm[0:7] + "_" + DtB(int(instrFields[2][1:]),5) + "_" + DtB(int(instrFields[1][1:]),5) + "_" + funct3 + "_" + imm[7:] + "_1100011"
+    def stype(funct3):
+        imm = DtB(int(instrFields[3]), 12)
+        return imm[0:7] + "_" + DtB(int(instrFields[2][1:]),5) + "_" + DtB(int(instrFields[1][1:]),5) + "_" + funct3 + "_" + imm[7:] + "_0100011"
     try:
         instrName = instrFields[0].casefold()
         if(instrName == "add"):
-            IWord = "0000000_" + DtB(int(instrFields[3][1:]),5) + "_"+ DtB(int(instrFields[2][1:]),5) + "_000_" + DtB(int(instrFields[1][1:]),5) + "_0110011"
+            IWord = rtype("0000000","000")
         elif(instrName == "sub"):
-            IWord = "0100000_" + DtB(int(instrFields[3][1:]),5) + "_"+ DtB(int(instrFields[2][1:]),5) + "_000_" + DtB(int(instrFields[1][1:]),5) + "_0110011"
+            IWord = IWord = rtype("0100000","000")
         elif(instrName == "sll"):
-            IWord = "0000000_" + DtB(int(instrFields[3][1:]),5) + "_"+ DtB(int(instrFields[2][1:]),5) + "_001_" + DtB(int(instrFields[1][1:]),5) + "_0110011"
+            IWord = rtype("0000000","001")
         elif(instrName == "slt"):
-            IWord = "0000000_" + DtB(int(instrFields[3][1:]),5) + "_"+ DtB(int(instrFields[2][1:]),5) + "_010_" + DtB(int(instrFields[1][1:]),5) + "_0110011"
+            IWord = rtype("0000000","010")
         elif(instrName == "sltu"):
-            IWord = "0000000_" + DtB(int(instrFields[3][1:]),5) + "_"+ DtB(int(instrFields[2][1:]),5) + "_011_" + DtB(int(instrFields[1][1:]),5) + "_0110011"
+            IWord = rtype("0000000","011")
         elif(instrName == "xor"):
-            IWord = "0000000_" + DtB(int(instrFields[3][1:]),5) + "_"+ DtB(int(instrFields[2][1:]),5) + "_100_" + DtB(int(instrFields[1][1:]),5) + "_0110011"
+            IWord = rtype("0000000","100")
         elif(instrName == "srl"):
-            IWord = "0000000_" + DtB(int(instrFields[3][1:]),5) + "_"+ DtB(int(instrFields[2][1:]),5) + "_101_" + DtB(int(instrFields[1][1:]),5) + "_0110011"
+            IWord = rtype("0000000","101")
         elif(instrName == "sra"):
-            IWord = "0100000_" + DtB(int(instrFields[3][1:]),5) + "_"+ DtB(int(instrFields[2][1:]),5) + "_101_" + DtB(int(instrFields[1][1:]),5) + "_0110011"
-        elif(instrName == "sra"):
-            IWord = "0100000_" + DtB(int(instrFields[3][1:]),5) + "_"+ DtB(int(instrFields[2][1:]),5) + "_101_" + DtB(int(instrFields[1][1:]),5) + "_0110011"
+            IWord = rtype("0100000","101")
         elif(instrName == "or"):
-            IWord = "0000000_" + DtB(int(instrFields[3][1:]),5) + "_"+ DtB(int(instrFields[2][1:]),5) + "_110_" + DtB(int(instrFields[1][1:]),5) + "_0110011"
+            IWord = rtype("0000000","110")
         elif(instrName == "and"):
-            IWord = "0000000_" + DtB(int(instrFields[3][1:]),5) + "_"+ DtB(int(instrFields[2][1:]),5) + "_111_" + DtB(int(instrFields[1][1:]),5) + "_0110011"
+            IWord = rtype("0000000","111")
         elif(instrName == "beq"):
-            branch = DtB(int(instrFields[3]), 12)
-            IWord = branch[0:7] + "_" + DtB(int(instrFields[2][1:]),5) + "_" + DtB(int(instrFields[1][1:]),5) + "_000_" + branch[7:] + "_" + "1100011"
+            IWord = btype("000")
         elif(instrName == "bne"):
-            branch = DtB(int(instrFields[3]), 12)
-            IWord = branch[0:7] + "_" + DtB(int(instrFields[2][1:]),5) + "_" + DtB(int(instrFields[1][1:]),5) + "_001_" + branch[7:] + "_" + "1100011"
+            IWord = btype("001")
         elif(instrName == "blt"):
-            branch = DtB(int(instrFields[3]), 12)
-            IWord = branch[0:7] + "_" + DtB(int(instrFields[2][1:]),5) + "_" + DtB(int(instrFields[1][1:]),5) + "_100_" + branch[7:] + "_" + "1100011"
+            IWord = btype("100")
         elif(instrName == "bge"):
-            branch = DtB(int(instrFields[3]), 12)
-            IWord = branch[0:7] + "_" + DtB(int(instrFields[2][1:]),5) + "_" + DtB(int(instrFields[1][1:]),5) + "_101_" + branch[7:] + "_" + "1100011"
+            IWord = btype("101")
         elif(instrName == "bltu"):
-            branch = DtB(int(instrFields[3]), 12)
-            IWord = branch[0:7] + "_" + DtB(int(instrFields[2][1:]),5) + "_" + DtB(int(instrFields[1][1:]),5) + "_110_" + branch[7:] + "_" + "1100011"
+            IWord = btype("110")
         elif(instrName == "bgeu"):
-            branch = DtB(int(instrFields[3]), 12)
-            IWord = branch[0:7] + "_" + DtB(int(instrFields[2][1:]),5) + "_" + DtB(int(instrFields[1][1:]),5) + "_111_" + branch[7:] + "_" + "1100011"
+            IWord = btype("111")
         elif(instrName == "lb"):
-            IWord = DtB(int(instrFields[3]), 12) + "_" + DtB(int(instrFields[2][1:]), 5) + "_000_" + DtB(int(instrFields[1][1:]), 5) + "_0000011"
+            IWord = loadInstr("000")
         elif(instrName == "lh"):
-            IWord = DtB(int(instrFields[3]), 12) + "_" + DtB(int(instrFields[2][1:]), 5) + "_001_" + DtB(int(instrFields[1][1:]), 5) + "_0000011"
+            IWord = loadInstr("001")
         elif(instrName == "lw"):
-            IWord = DtB(int(instrFields[3]), 12) + "_" + DtB(int(instrFields[2][1:]), 5) + "_010_" + DtB(int(instrFields[1][1:]), 5) + "_0000011"
+            IWord = loadInstr("010")
         elif(instrName == "lbu"):
-            IWord = DtB(int(instrFields[3]), 12) + "_" + DtB(int(instrFields[2][1:]), 5) + "_100_" + DtB(int(instrFields[1][1:]), 5) + "_0000011"
+            IWord = loadInstr("100")
         elif(instrName == "lhu"):
-            IWord = DtB(int(instrFields[3]), 12) + "_" + DtB(int(instrFields[2][1:]), 5) + "_101_" + DtB(int(instrFields[1][1:]), 5) + "_0000011"
+            IWord = loadInstr("101")
         elif(instrName == "sb"):
-            IWord = DtB(int(instrFields[3]), 12) + "_" + DtB(int(instrFields[2][1:]), 5) + "_000_" + DtB(int(instrFields[1][1:]), 5) + "_0100011"
+            IWord = stype("000")
         elif(instrName == "sh"):
-            IWord = DtB(int(instrFields[3]), 12) + "_" + DtB(int(instrFields[2][1:]), 5) + "_001_" + DtB(int(instrFields[1][1:]), 5) + "_0100011"
+            IWord = stype("001")
         elif(instrName == "sw"):
-            IWord = DtB(int(instrFields[3]), 12) + "_" + DtB(int(instrFields[2][1:]), 5) + "_010_" + DtB(int(instrFields[1][1:]), 5) + "_0100011"
+            IWord = stype("010")
         elif(instrName == "addi"):
-            IWord = DtB(int(instrFields[3]), 12) + "_" + DtB(int(instrFields[2][1:]), 5) + "_000_" + DtB(int(instrFields[1][1:]), 5) + "_0010011"
+            IWord = itype("000")
         elif(instrName == "slti"):
-            IWord = DtB(int(instrFields[3]), 12) + "_" + DtB(int(instrFields[2][1:]), 5) + "_010_" + DtB(int(instrFields[1][1:]), 5) + "_0010011"
+            IWord = itype("010")
         elif(instrName == "sltiu"):
-            IWord = DtB(int(instrFields[3]), 12) + "_" + DtB(int(instrFields[2][1:]), 5) + "_011_" + DtB(int(instrFields[1][1:]), 5) + "_0010011"
+            IWord = itype("011")
         elif(instrName == "xori"):
-            IWord = DtB(int(instrFields[3]), 12) + "_" + DtB(int(instrFields[2][1:]), 5) + "_100_" + DtB(int(instrFields[1][1:]), 5) + "_0010011"
+            IWord = itype("100")
         elif(instrName == "ori"):
-            IWord = DtB(int(instrFields[3]), 12) + "_" + DtB(int(instrFields[2][1:]), 5) + "_110_" + DtB(int(instrFields[1][1:]), 5) + "_0010011"
+            IWord = itype("110")
         elif(instrName == "andi"):
-            IWord = DtB(int(instrFields[3]), 12) + "_" + DtB(int(instrFields[2][1:]), 5) + "_111_" + DtB(int(instrFields[1][1:]), 5) + "_0010011"
+            IWord = itype("111")
         else:
             issue = True
             print("The instruction you entered is invalid or not supported.")
         if(not issue):
-            print("\n32'b" + IWord + "; //" + inp + "\n")
+            outStr = "32'b" + IWord + "; //" + inp
+            print("\n" + outStr + "\n")
+            clipboard.copy(outStr)
     except:
         print("There was a problem with your input. Make sure it's formatted correctly")
     inp = str(input("Enter an instruction: "))
