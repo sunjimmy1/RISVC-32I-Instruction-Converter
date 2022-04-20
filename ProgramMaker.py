@@ -90,3 +90,4 @@ while(inp != ""):
 if(not issue):
     print("\n" + outStr + "\n")
     clipboard.copy(outStr)
+input()
